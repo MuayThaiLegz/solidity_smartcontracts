@@ -45,5 +45,92 @@ contract ForLoopExample {
     
 }
 
+contract DowhileLoop {
+    mapping (uint => uint) blockNumber;
+    uint counter;
+    event uintNumber(uint);
+    bytes aa;
+    
+    function setNumbers() public {
+        blockNumber[counter++] = block.number;
+        
+    }
+    
+    
+    function getNumbers() public {
+        uint i = 0;
+        do {
+            uintNumber(blockNumber[i] );
+            i = i + 1;
+            
+        } while ( i < counter);
+    }
+}
 
-contract Down
+
+contract ForLoopExampleBreak {
+    mapping (uint => uint) blockNumber;
+    uint counter;
+    
+    event uintNumber(uint);
+    
+    function setNumber() public {
+        
+        blockNumber[counter++] = block.number;
+        
+    }
+    
+    function getNumbers() public {
+        
+        for (uint i=0; i < counter; i++){
+            if (i ==1)
+                break;
+            uintNumber( blockNumber[i] );
+        }
+        
+    }
+}
+
+
+contract ForLoopExampleContinue { 
+    mapping (uint => uint) blockNumber;
+    uint counter;
+    
+    event uintNumber(uint);
+    
+    function setNumber() public {
+        
+        blockNumber[counter++] = block.number;
+    }
+    
+    function getNumbers() public {
+        for (uint i=0; i< counter; i++){
+            if ((i > 5))
+                { continue;}
+            uintNumber( blockNumber[i] );
+        
+        }
+    }
+}
+
+contract ReturnValues {
+    
+    uint counter;
+    
+    function setNumber() public {
+        
+        counter = block.number;
+        
+    }
+    
+    function getBlockNumber() public returns (uint) {
+        
+        return counter;
+    }
+    
+    function getBlockNumber1() private returns (uint result) {
+        
+        result = counter;
+    }
+    
+}
