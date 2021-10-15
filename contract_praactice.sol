@@ -126,5 +126,80 @@ contract HelloWOrld3 {
 
 
 
+pragma solidity 0.7.0;
+
+contract PearentContract {
+    
+    uint internal simpleInteger;
+    
+    function SetInteger(uint _value) external {
+        simpleInteger = _value;
+    }
+    
+}
+
+contract ChildContract is PearentContract {
+    
+    bool private simpleBool;
+    
+    function GetInteger() public view returns (uint) {
+        return simpleInteger;
+    }
+}
+
+contract Client {
+    
+    ChildContract pc = new ChildContract();
+    
+    function workWtihInheritance() public returns (uint){
+        pc.SetInteger(100);
+        return pc.GetInteger();
+    }
+}
+
+contract SumContract {
+    
+    function Sum(uint a, uint b) public returns (uint) {
+        return a + b;
+    }
+}
+
+
+contract MultiContract is SumContract {
+    
+    function Multiply(uint a, uint b) public returns (uint) {
+        return a * b;
+    }
+}
+
+contract DivideCotract is SumContract {
+    
+    function Divide (uint a, uint b) public returns (uint) {
+        
+        return a - b;
+    }
+}
+
+contract SubContract is SumContract, MultiContract,DivideCotract{
+    
+    function sub(uint a, uint b) public returns (uint) {
+        return a/b;
+    }
+}
+
+contract client {
+    
+    function workWithInheritance() public returns (uint) {
+        
+        uint a = 20;
+        uint b = 10;
+        SubContract subt = new SubContract();
+        return subt.Sum(a,b);
+    }
+}
+
+// Conctract polumorphism 
+
+
 
 
