@@ -67,3 +67,42 @@ contract ContractWithModifier {
         mydataFin = _data5 * 10;
     }
 }
+
+
+// view, constant, and pure functions
+contract viewfunction {
+    function grabsomething(int _data) public view returns (int) {
+        return _data * 10;
+    }
+}
+
+contract purefu {
+    function getanother(int _data) public returns (int) {
+        return _data * 10;
+    }
+
+}
+
+contract paymentMethods {
+
+mapping (address => uint) balance;
+
+function simplesendtoacct(uint amount) public returns (bool) {
+    if (balance[msg.sender] >= amount) {
+        balance[msg.sender] -= amount;
+        if (msg.sender.send(amount) == true) {
+            return true;
+        }
+        else {
+            balance[msg.sender] += amount;
+            return false;
+        }
+    }
+}
+    
+
+function simtranstoac() public {
+    msg.sender.transfer(1);
+    
+    }
+}
