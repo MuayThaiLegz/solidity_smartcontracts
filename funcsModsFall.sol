@@ -105,4 +105,52 @@ function simtranstoac() public {
     msg.sender.transfer(1);
     
     }
+
+}
+contract EtherBox {
+    uint balance;
+    event logme(string);
+    
+    
+    function SetBalance() public {
+        balance = balance + 10;
+    }
+    
+    function GetBalance() public payable returns(uint) {
+        return balance;
+    }
+
+    fallback () external payable {
+        emit logme("fallback called");
+    }
+}
+    
+    
+    
+contract UsingCall {
+    function UsingCalls() public payable {
+    }
+    
+    function SimpleCall() public returns (uint) {
+        bool status = true;
+        EtherBox eb = new EtherBox();
+        address myaddr = address(eb);
+       // status = myaddr.call(keccak256('SetBalance()'));
+    }
+    
+    function SimpleCallwithGas() public returns (bool) {
+        bool status = true;
+        EtherBox eb = new EtherBox();
+        address myaddr = address(eb);
+        //status = myaddr.call(1)(bytes4(keccak256("GetBalance()")));
+        return status;
+    }
+    
+    /*function SimpleCallwithGasandValue() public returns (bool) {
+        bool status = true;
+        EtherBox ev = new EtherBox();
+        address myaddr = address(eb);
+        return status = ,myaddr.call.gas(2000000).value(1)(bytes4(sha3('getBalance()')));
+    }*/
+    
 }
