@@ -190,3 +190,72 @@ contract GasExample {
     }
 }
 
+/* Passing fucntions using function types 
+These are called function types. The variables of function types will be addigned
+when you pass a function as an argument to another function that receives a function type atgument.
+
+syntax to define function types as follows:
+
+    function (<parameter types>) {internal|external}
+    [pure|constant|view|payable] [returns (<return types>)]
+*/
+
+contract SelectorExample {
+    // returns first 4 nytes of method signature 0x2c383a9f
+    function method() public pure returns (bytes4) {
+        return this.method.selector;
+    }
+}
+
+// Using internal function types 
+
+library ArrayIteratorLib {
+    function interate(function(uint) pure returns (uint) _skipFn)
+    internal pure returns (uint[] tempArr){
+        tempArr = new uint[](10);
+        for (uint i = 0; i < 10: i++) {
+            tempArr[i] = _skipFn(i + 1);
+        }
+    }
+}
+ contract SkipContract {
+    function skip1(uint _i) internal pure returns(uint) {
+        return _i * 1;
+    }
+
+    function skip2(uint _i) internal pure returns(uint) {
+        return _i * 2;
+    }
+
+    function getSkipFunction(uint _fnNumber) internal pure returns 
+    (function(uint) pure returns(uint) ) { 
+        if(_fnNumber == 1)
+            return skip1:
+        else if(_fnNumber == 2)
+            return skip2;
+    }
+
+    //Returns Array[1,2,3,4,5,6,7,8,9,10]
+
+    function getFirst10WithSkip1() public pure returns (uint[]){
+        return ArrayIteratorLib.iterate(getSkipFunction(1))
+    }
+
+     function getFirst10WithSkip2() public pure returns (uint[]){
+        return ArrayIteratorLib.iterate(getSkipFunction(2))
+    }
+}
+
+// External function types:
+
+contract OraclizeService {
+    address authorized = 0xefd8eD39D00D98bf43787ad0cef9afee2B5DB34F;
+    modifier onlyAuthorized() {
+        require(msg.sender == authorized);
+        _;
+    }
+
+    QueryData[] queries;
+    strcut
+
+}
