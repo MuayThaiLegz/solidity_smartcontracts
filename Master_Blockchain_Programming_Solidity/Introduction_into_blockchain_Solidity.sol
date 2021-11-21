@@ -142,11 +142,12 @@ contract LoanStruct {
         LoanStatus status; //LoanStatus stored 
     }
 }
+/*
 
 contract CallExample {
     // ..{
     address otherContract = 0xC4FE5518f0168DA7BbafE375Cd84d30f64CDa491;
-    string memory param1 = 'param1=string';
+    string[] memory param1 = new string[]('param1=string');
     uint param2 = 10;
 
     // With multiple parameters 
@@ -167,7 +168,7 @@ contract CallExample {
 contract GasExample {
     constructor () public {
         address otherContract = 0xV4FE5518f0168DA7BbafE375Cd84d30f64CDa491;
-        /* gas adjustments */ 
+            gas adjustments
         require(otherContract.call.gas(1000000)(
             'methodName', 'param1'));
         require(otherContract.delegatecall.gas(1000000)(
@@ -189,7 +190,7 @@ contract GasExample {
             'methodName', 'param1'));
     }
 }
-
+*/
 /* Passing fucntions using function types 
 These are called function types. The variables of function types will be addigned
 when you pass a function as an argument to another function that receives a function type atgument.
@@ -213,7 +214,7 @@ library ArrayIteratorLib {
     function interate(function(uint) pure returns (uint) _skipFn)
     internal pure returns (uint[] tempArr){
         tempArr = new uint[](10);
-        for (uint i = 0; i < 10: i++) {
+        for (uint i = 0; i < 10; i++) {
             tempArr[i] = _skipFn(i + 1);
         }
     }
@@ -230,7 +231,7 @@ library ArrayIteratorLib {
     function getSkipFunction(uint _fnNumber) internal pure returns 
     (function(uint) pure returns(uint) ) { 
         if(_fnNumber == 1)
-            return skip1:
+            return skip1;
         else if(_fnNumber == 2)
             return skip2;
     }
@@ -241,7 +242,7 @@ library ArrayIteratorLib {
         return ArrayIteratorLib.iterate(getSkipFunction(1))
     }
 
-     function getFirst10WithSkip2() public pure returns (uint[]){
+    function getFirst10WithSkip2() public pure returns (uint[]){
         return ArrayIteratorLib.iterate(getSkipFunction(2))
     }
 }
@@ -256,6 +257,120 @@ contract OraclizeService {
     }
 
     QueryData[] queries;
-    strcut
+    struct QueryData {
+        bytes currency;
+        function (uint, bytes memory)
+        external returns (bool) calolbackFunction;
+    }
+
+    event NewRequestEvent(uint requestID);
+
+    function query (
+        bytes _currency,
+        function(uint, bytes memory) external returns(bool) _callbacksFn) public {
+            // Registering callback
+            queries.push (QueryData(_currency, _callbackFn));
+            emit NewRequestEvent(queries.length - 1);
+        }
+    function reply(uint requestID, bytes response) public onlyAuthorized {
+        require(queries[requestID].callbackFunction(requestID, response));
+        delete queries[requestID]; // release storage     
+    }
+}
+
+contract OracleUser {
+    modifier onlyOracle {
+        require(msg.sender == address(oraclizeService),
+            "Only oracle can call this." );
+        _;
+    }
+    // Known Contract address of Oraclize Service
+    OraclizeService constant oraclizeService = 
+        OraclizeService(0x611B947ec990Ba4e1655BF1A375866467144A2D65);
+    event ResponceReceived(uint requestID, bytes response);
+
+    function getUSDRate() public {
+        oraclizeService.query("USD", this.queryResponse);
+    }
+    
+    function queryResponse(uint _requestID, bytes _response)
+    public onlyOracle returns (bools) {
+        // Use the response data 
+        //...
+        emit ResponseReceived(_requestID, _response);
+        return true;
+    }
+}
+
+// Using arrays in Solidity
+
+/* 
+
+In solidity, arrays can be fixed or dynamic size. We have already seen in the previous sections.
+    Fixed size byte arrays and Dynamiccally sized byte,
+    arrays of this chapter that bytes and string are special types of array.
+
+    creating arrays using new - fyou can create variable length, in memory arrays using new.
+
+*/
+
+address[] memory owners = new address[](10)
+
+// The following members functions are avaliable on an array:
+// * push: this appends a new element at athe last oisition in an array.
+
+contract ArraysExample {
+    // Dynamic Array 
+    address[] public owners;
+    constructor(address[] _owners) public {
+        for(uint i = 0; i < _owners.length ; i++) {
+            uint newLength = owners.push(_owners[i]);
+        }
+    }
+
+    function removeLast() public {
+        // Check to ensure that array has elemnt
+        // Without this check, .length will have integer underflow
+        require(owners.length > 0);
+        // Removes tha lst elements from dynamic array
+        owners.length--;
+        
+    }
+}
+
+/* 
+// Creating a key value map using mapping- Declare a mapping in Solidity using:
+    
+mapping(KEY_TYPE => VALUE_TYPE)
+
+The KEY_TYPE cannot b mapping, a dynamically sized arrays, a contract, enum, or struct. 
+The reemaining data types can be useed for KEY_TYPE.
+The VALUE_TYPE can be any type; even a mapping is allowed.
+
+The data used for KEY_TYPE is not stored in mapping -- its keccak256 hash is generated and persisted,
+which in turn used to look up the value. Mapping do not have length member to know their current size.
+hence, you cannot iterate a mapping.
+
+*/
+
+contract MappingExample {
+    mapping(address => uint) public balances;
+
+    function update(uint newBalance) public {
+        // Adds a new mapping if not present
+        // Updates the new value if entry already present.
+        balances[msg.sender] = newBalance;
+
+    }
+
+    // Increases balance by _increaseBy numbers
+    function increaseeBalance(uint _increaseBy) public {
+        update(balanceOf(msg.sender) + _increaseBy);
+    }
+
+    function balanceOf(address _user) public view returns (uint) {
+        //Gets the entry from mapping
+        return balances[_user];    
+    }
 
 }
