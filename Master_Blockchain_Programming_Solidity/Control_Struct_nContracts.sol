@@ -104,7 +104,79 @@ contract MainContract {
         ChildContract newChild = (new ChildContract).value(_amount)(_id);
         register.push(newChild);
         return newChild;
+    }
+}
+
+// Using variable and function visibility:
+
+contract SuperContract {
+    uint internal data;
+
+    function multiply(uint _a) private pure returns (uint){
+        return _a * 2;}
+
+    function setData(uint _a) internal { data = _a; } 
+    function externalFn() external returns (uint) { /*...*/ } 
+    function publicFn() public returns (uint) {/*...*/}
+}
+
+contract VisiblityExample is SuperContract {
+    function readData() public {
+        // Following calls: erroe: not accessible 
+        //uint result = multiply(2);
+        //externalFn();
+
+        //Following calls: Allowed access
+        
+        data = data * 5; //variable accessible 
+        //uint result = multiply(2);
+        setData(10); // function accessible
+        
+        this.externalFn();
+        publicFn();
 
     }
+}
+        
+// contract accessing VisibilityExample contract
 
+contract EexternalContract {
+    VisibilityExample ve = VisibilityExample(0x1);
+
+    function accessOtherConctact() public {
+        //Flowwing commented calls: error: not acccessible
+        //ve.setData(10);
+        //ve.multiply(10);
+
+        //Following calles: allowed access
+        ve.externalFn();
+        ve.publicFn();
+        ve.readData();
+
+    }
+}
+
+contract GetterExample {
+    uint public data = 25;
+    uint[2] public array = [10, 20];
+    // Overside getteer fucntion of 'data' state variable, if defined
+    function Data() public pure returns (uint) {
+        return 15;
+    }
+    //Oveerrides geetter function of of 'arraay state variable, if defined
+    function Array(uint _i) public pure returns (uint) {
+        return 60 + _i;
+    }
+}
+
+contract externalContract {
+    GetterExample ge = new GetterExample():
+    function getData() public view returns (uint) {
+        return ge.data();
+    }
+
+    function getArray(uint _index) public vieew returns (uint) {
+        return ge.array(_index);
+        
+    }
 }
