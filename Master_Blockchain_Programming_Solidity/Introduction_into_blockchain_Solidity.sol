@@ -372,5 +372,76 @@ contract MappingExample {
         //Gets the entry from mapping
         return balances[_user];    
     }
+}
 
+/* Application Binary interface encoding functions.
+Solidity provides many global functions to ncode (inccluding packed encoding)
+    the different data types of S0lidity.
+The following is an example ABIEncodEEExample contracat to show different
+    encoding fucntions abd their behavior:
+*/
+
+contract ABIEncodeExample {
+    address addr;
+    uint uInt;
+    uint8 uInt8;
+    uint16 uInt16;
+    constructor() public {
+        addr =  0x611B947ec990Ba4ee1655BF1A37586467144A2D65;
+        uInt = 20; uInt = 25; uInt16 = 30;
+    }
+    function testMethod(uint _am uint8 _b) public view {//..}
+    function encode() public view returns (bytes) {
+        // Returns following concatenated 
+        // Prefix: 0x
+        // addr:   000000000000000000000
+        //         000611b947ec990ba4e1655bf1137586467144a2d65
+        // uInt:   000000000000000000000
+        //         0000000000000000000000000000000000000000014
+        // uInt8:  000000000000000000000
+        //         0000000000000000000000000000000000000000019
+        // uInt16: 000000000000000000000
+        //         000000000000000000000000000000000000000001e
+        return abi.encode(addr, uInt, uInt8, uInt16);         
+    }
+    function encodePacked() public vir returns (bytes) {
+        // Prefic:  0x
+        // addr :   611b644ec990ba4e655bf1a37586467144a2d65 
+        // uInt :   000000000000000000000
+        //          000000000000000000000000000000000000000014
+        // uInt :   19
+        // uInt16 : 001e   
+        return abi.encodePacked(addr, uInt, uInt8, uInt16);
+        //Packing of uint as per their size    
+    }
+    // Each of the following calls will return the same data 
+    // Prefix :     0x
+    // selector:    13bd8af1
+    // uInt :       000000000000000000000
+    //              000000000000000000000000000000000000000014
+    // uInt8 :      000000000000000000000
+    //              000000000000000000000000000000000000000019
+    return abi.encodeWithSelector(this.testMethod.selector, uInt, uInt8);
+    return abi.encodeWithSelector((bytes4(keccak256)'testMethod)(uint256, uint8)')), uInt, uInt8);
+} 
+
+// Contract related fucntions: available to get the address for the current deployed smart contract
+    //  and a smart contract instance.
+
+// Get the contract address u sing this keyword: used in contract to get current contract's type
+    // 'this' is also explicitly convertible to the addreess type
+
+contract ThisExample{
+    ThisExample public instance;
+    ThisExample public instaceConverted;
+    address public currentContractAddress;
+    address public currentContractAddressConverted;
+    constructor() public {
+        owner = msg.sender;
+        instance = msg.sender;
+        instance = this;
+        instanceConverted = ThisExample(this);
+        currentCntractAdress = this;
+        currentCntractAdressConverted = address(this);
+    }
 }
