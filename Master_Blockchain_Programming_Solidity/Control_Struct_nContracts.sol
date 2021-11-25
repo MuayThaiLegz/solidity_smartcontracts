@@ -180,3 +180,272 @@ contract externalContract {
         
     }
 }
+
+contract Ownable {
+    address public owner;
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+    constructor() public {
+        owner = msg.sender;
+    }
+}
+
+contract ModifierExample is Ownable {
+    enum Status {INT, PENDING, INPROCESS, PROCESSED}
+    Status public status;
+
+    event StatusChnaged(Status status);
+    modifier logAtEnd(Status _status) {
+        _;
+        emit StatusChanged(_status);
+    }
+
+    function changeState(Status _status) public onlyOwner
+     logAtEnd(_status) {
+         status = _status;
+     }
+}
+
+//Understanding types of  Solifity functions :Syntax used to define a fucntion defnition is as follows
+
+// function functionName(<parameter types>) {internal|external|public|private}
+// [pure|view|payable] [returns (<return types>)]
+
+// The following code is getting the current state of the exchange:
+
+contract ViewFuncExample {
+    enum ExchangeStatus { Inactive, Active }
+    ExchangeStatus status = ExchangeStatus.Active;
+
+    function getCurrentState() public cire returns (ExchangeStatus) {
+        return status;
+    }
+    // Rest of the code
+}
+
+function withdrawDividend() public {
+    //Code here to update dividend paid staus, so that user 
+    //cannot clain again
+    //send current divident amount 
+    msg.sender.transfer(calculateDividend())
+}
+
+function calculateDividend() public view returns (uint) {
+    return balancaOf[msg.sender] * dividendUintPerToken;
+}
+
+// The following exmaplew contact shows a pure function
+
+contract PureFuncExample {
+    uint c = _a + _b;
+    require(c >= _a);
+    return c;
+}
+
+// Using the default fallback function: In Solidity may only one fallback per contract.
+// fallback doesn't have a name, arguments to the function, does not return values.
+// fallback sexecute when the sata in the transaction is empty, as well as when no matching function
+// identifier present in the contract: fallbacks are defined as follows in the contract
+
+function()  external {
+    // function body
+}
+// a 'payable' fallback function that can accept any amount of ether thats sent to contract address
+// with or without data. if not fallback or payable fucntion exists in contract sent ether 
+    // will cause the transaction to fail
+
+contract FallbackFunctionExample{
+    uint weiReceived;
+
+    function() external payable {
+        weiRecaived += msg.value;
+    }
+}
+
+/* Overloading functions:
+Overloading a fucntion meeans that you can create a function that has the same name but different
+arguments and/or a different type. For function overloading, you have to ensure that the function
+signature is different for each overloaded function. Also applies to inherited functions.
+
+
+Funciton signature consists of the function name and its argumetns type in the order they are defined.
+*/
+
+contract FuncOverload {
+    address owner;
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    function transfer(address _to, uint _amount) public returns (bool) {
+        return doTransfer(_to, _amount);
+    }
+
+    function transfer(address _to) public returns (bool) {
+        return doTransfer(_to, 1 ether);    
+    }
+
+    function transfer() public returns (bool) {
+        return doTransfer(owner, address(this).balance);
+    }
+
+    function doTranfer(address _to, uint _amount) internal
+    returns (bool) {
+        _to.transfer(_amount);
+        return true;
+    }
+}
+
+// Inhetiting contracts 
+
+contract Ownable {
+    address public owner;
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    constructor() public {
+        owner = msg.sender;
+    }
+}
+
+contract ValueStorage1 is ValueStorage {
+    function update() public {
+        value *= 2;
+        ValueStorage.update();
+    }
+}
+
+contract ValueStorage2 is ValueStorage {
+    function update() public {
+        value *= 3;
+        ValueStorage.update();
+    }
+}
+
+contract InheritanceExample is ValueStorage1, ValueStorage2 {
+}
+
+// Using super keyword:
+
+contract Ownable {
+    address public owner;
+    modifier onlyOwner() {
+        require((msg.sender == owner);
+        _;
+    }
+
+    constructor() public {
+        owner = msg.sender;
+    }
+}
+
+contract ValueStorage is Ownable {
+    uint public value = 2;
+    function update() public onlyOwner {
+        value += 1;    
+    }
+    //..
+}
+
+contract ValueStorage1 is ValueStorage {
+    function update() public  {
+        value *= 2;
+        super.update();
+    }
+}
+
+contract  ValueStorage2 is ValueStorage {
+    function update() public {
+        value *= 3;
+        super.update();
+    }    
+}
+
+contract InheritanceExample2 is ValueStorage1, ValueStorage2 {
+}
+
+// REVISIT PAGE 105-106
+
+/* 
+
+Creating interfaces: Define interfaces in SOlidity using the interface keyword. They must not have 
+any function definitions. They also have these restrictions:
+    
+    * All the functionsthat are defined in the interface must have external visibility.
+    * No constructor allowed
+    * No state vars defined.
+    * Cannot inherit from any other contract or interfaces
+
+interface examplee defined in verions 0.5.0:
+*/
+
+pragma solidity 0.5.0;
+
+interface ExampleInterface {
+    enum Status {Pending, Inprocess, Processed}
+    struct Data {
+        address requester;
+        uint amount;
+        Status status;    
+    }
+    function tranfer(address _to, uint _amount) external;
+}
+
+// Creating sutom reusbvale libraries
+
+library ControlledAddressList {
+    
+    struct Data {
+        mapping(address => bool) addresses;
+    }
+
+    function enable(Data storage self, address _address) public returns (bool){
+        require(_address != address(0));
+        require(isDisabled(self, _address));
+        self.addresses[_address] = true;
+        return true;
+    }
+
+    function isEnabled(Data storage self, address _address) public view returns (bool) {
+        return self.addresses[_address] == false;
+    }
+}
+
+// Using libraries with - using.. for directive: To attach a lib to contract,
+// we use special directive called: using  X for Y:
+// Where X is the library and Y is the data type. Defining this directive we are saying that X is a lib.
+// We take all functions from X lib an allow those functions to be called on Y data type.
+
+
+// Here is an example contract called TokenList contract, which is using ControlledAddressList,
+
+// Waiting to review the intallation of openzeppelin for hardcoding:
+
+import './ControlledAddressList for ControlledAddressList.Data;
+
+// import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
+
+contract TokenList is Ownable {
+    using ControlledAddressList for ControlledAddressList.Data;
+    ControlledAddressList.Data data;
+    
+    function add(address _token) public onlyOwner returns (bool) {
+        return data.enable(_token);
+    }
+
+    function remove(address _token) public onlyOwner returns (bool) {
+        return data.disable(_token);    
+    }
+
+    function isPresent(address _token) public view returns (bool) {
+        return data.isEnabled(_token);
+        
+    }
+}
+
+
+
