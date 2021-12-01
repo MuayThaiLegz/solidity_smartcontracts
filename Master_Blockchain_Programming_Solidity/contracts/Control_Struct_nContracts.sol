@@ -14,7 +14,7 @@ The following topics will be convered in this chapter:
 
 // Returning multiple values from function: Returning multiple values from a function:
 
-pragma solidity 0.7.0;
+pragma solidity ^0.7.0;
 
 /*contract MultiReturn {
     function sum() public pure returns (uint) {
